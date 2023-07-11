@@ -6,8 +6,7 @@ using Camunda.Worker.Variables;
 
 namespace SampleCamundaWorker.Handlers;
 
-[HandlerTopics("sayHello", LockDuration = 10000)]
-[HandlerVariables("USERNAME")]
+[HandlerTopics("BankHandler")]
 public class SayHelloHandler : IExternalTaskHandler
 {
     public async Task<IExecutionResult> HandleAsync(ExternalTask externalTask, CancellationToken cancellationToken)

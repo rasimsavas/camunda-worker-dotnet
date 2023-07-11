@@ -14,15 +14,13 @@ namespace SampleCamundaWorker.Providers
     public class CustomFetchAndLockProvider : IFetchAndLockRequestProvider
     {
         private IConfiguration _configuration;
-        private Constans _const;
-        private ClientOptions _options;
+        private Constants _const;
         private List<Topic> _topics;
 
-        public CustomFetchAndLockProvider(string topicName, IConfiguration configuration)
+        public CustomFetchAndLockProvider(IConfiguration configuration)
         {
             _configuration = configuration;
-            _const = _configuration.GetSection("Config").Get<Constans>();
-            _options = _configuration.GetSection(topicName).Get<ClientOptions>();
+            _const = _configuration.GetSection("Config").Get<Constants>() ?? new Constants();
             _topics = _configuration.GetSection("Topics").Get<List<Topic>>();
         }
         public FetchAndLockRequest GetRequest()
@@ -40,9 +38,8 @@ namespace SampleCamundaWorker.Providers
             request.UsePriority = _const.UsePriority;
             return request;
         }
-        private class Constans
+        private class Constants
         {
-            public string ClientBaseAdress { get; set; }
             public int MaxTasks { get; set; }
             public bool UsePriority { get; set; }
             public int AsyncResponseTimeout { get; set; }

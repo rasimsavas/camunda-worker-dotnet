@@ -8,7 +8,7 @@
   },
   "Topics": [
     {
-      "TopicName" : "HalkHandler",
+      "TopicName": "HalkHandler",
       "LockDuration": 12345, // Zorunlu. Harici görevleri milisaniye cinsinden kilitleme süresi.
       "LocalVariables": false, // True olarak ayarlanir ise sadece local variable`lari dahil eder.
       "DeserializeValues": false, // Seri hale getirilebilir değişken değerlerinin (genellikle özel Java nesnelerini depolayan değişkenler) sunucu tarafında seri durumdan çıkarılıp çıkarılmayacağını belirler (varsayılan "false").
@@ -23,6 +23,14 @@
       "ProcessDefinitionKey": null, // 	Filter tasks based on process definition key.
       //"ProcessDefinitionVersionTag": null, // İşlem tanımı sürüm etiketine göre görevleri filtreleyin. --- o0o --- bu projede tanimli degil, gerekli ise eklenebilir.
       "WithoutTenantId": false // İşlem tanımı sürüm etiketine göre görevleri filtreleyin.
+    },
+    { "TopicName" :  "BankHandler",
+      "LockDuration": 13000,
+      "LocalVariables": false,
+      "DeserializeValues": true,
+      "IncludeExtensionProperties": false,
+      "Variables": [ "halk", "bank" ]
+      //"ProcessVariables": { "rasim": 18 }
     }
   ]
 }
