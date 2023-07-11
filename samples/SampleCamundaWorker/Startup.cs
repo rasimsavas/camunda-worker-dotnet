@@ -1,9 +1,5 @@
-using System;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
 using Camunda.Worker;
 using Camunda.Worker.Client;
-using Camunda.Worker.Endpoints;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SampleCamundaWorker.Handlers;
 using SampleCamundaWorker.Providers;
+using System;
 
 namespace SampleCamundaWorker;
 
@@ -32,8 +29,8 @@ public class Startup
         });
         
         services.AddCamundaWorker("sampleWorker")
-            .AddHandler<SayHelloHandler>(a=> new EndpointMetadata(new string[] {"HalkHandler,BankHandler"},3333))
-            .AddHandler<SayHelloGuestHandler>(a => new EndpointMetadata(new string[] { "BankHandler,BankHandler" }, 3333))
+            .AddHandler<SayHelloHandler>()
+            //.AddHandler<SayHelloGuestHandler>()
             .AddFetchAndLockRequestProvider((a,b) => new CustomFetchAndLockProvider(Configuration))
             .ConfigurePipeline(pipeline =>
             {

@@ -27,12 +27,18 @@ namespace SampleCamundaWorker.Providers
         {
             
             var request = new FetchAndLockRequest(_const.WorkerId , _const.MaxTasks);
-            foreach(var t in _topics)
+
+            var checkEmpty = _topics.Where(topic => topic.ProcessDefinitionId == "" || topic.ProcessDefinitionKey == "" || topic.BusinessKey == "").ToList();
+            if(checkEmpty.Any())
             {
-                t.ProcessDefinitionId = null;
-                t.ProcessDefinitionKey = null;
-                t.BusinessKey = null;
+                foreach (var t in checkEmpty)
+                {
+                    t.ProcessDefinitionId = null;
+                    t.ProcessDefinitionKey = null;
+                    t.BusinessKey = null;
+                }
             }
+
             request.Topics = _topics;
             request.AsyncResponseTimeout = _const.AsyncResponseTimeout;
             request.UsePriority = _const.UsePriority;

@@ -6,14 +6,14 @@ using Camunda.Worker.Variables;
 
 namespace SampleCamundaWorker.Handlers;
 
-[HandlerTopics("BankHandler")]
+[HandlerTopics("HalkHandler")]
 public class SayHelloHandler : IExternalTaskHandler
 {
     public async Task<IExecutionResult> HandleAsync(ExternalTask externalTask, CancellationToken cancellationToken)
     {
         if (!externalTask.TryGetVariable<StringVariable>("USERNAME", out var usernameVariable))
         {
-            return new BpmnErrorResult("NO_USER", "Username not provided");
+            return new BpmnErrorResult("mutarror1", "Username not provided");
         }
 
         var username = usernameVariable.Value;

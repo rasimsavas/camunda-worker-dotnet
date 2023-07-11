@@ -1,9 +1,9 @@
 {
   "Config": {
     "ClientBaseAdress": "http://localhost:8080/engine-rest",
-    "MaxTasks": 10,
+    "MaxTasks": 11,
     "UsePriority": true,
-    "AsyncResponseTimeout": 10000,
+    "AsyncResponseTimeout": 10001,
     "WorkerId": "halkbankWorker"
   },
   "Topics": [
