@@ -1,51 +1,28 @@
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
+  "Config": {
+    "ClientBaseAdress": "http://localhost:8080/engine-rest",
+    "MaxTasks": 10,
+    "UsePriority": true,
+    "AsyncResponseTimeout": 10000,
+    "WorkerId": "halkbankWorker"
   },
-  "AllowedHosts": "*",
-  "clientBaseAdress": "http://localhost:8080/engine-rest",
-  "maxTasks": 10,
-  "usePriority": true,
-  "asyncResponseTimeout": 10000,
-  "workerId": "halkbankWorker",
-  "topics": {
-    "HalkHandler": // Topic Name
+  "Topics": [
     {
-      "LockDuration": 5000, // Zorunlu. Harici görevleri milisaniye cinsinden kilitleme süresi.
+      "TopicName" : "HalkHandler",
+      "LockDuration": 12345, // Zorunlu. Harici görevleri milisaniye cinsinden kilitleme süresi.
       "LocalVariables": false, // True olarak ayarlanir ise sadece local variable`lari dahil eder.
       "DeserializeValues": false, // Seri hale getirilebilir değişken değerlerinin (genellikle özel Java nesnelerini depolayan değişkenler) sunucu tarafında seri durumdan çıkarılıp çıkarılmayacağını belirler (varsayılan "false").
       "IncludeExtensionProperties": true, // External Task Icin ExtensionProperty alanlarinin da dahil edilip edilmeyecegini temsil eder. default deger "false".
       "Variables": [ "halk", "bank", "localVar" ], // Değişken adlarını temsil eden bir JSON Dize değerleri dizisi. Bu konuya ait her bir sonuç görevi için, verilen değişkenler, harici görevin yürütülmesinden erişilebilirlerse de döndürülür. Sağlanmazsa - tüm değişkenler alınır.
       "ProcessDefinitionIds": null, // İşlem tanımı kimliklerine göre görevleri filtreleyin. Json List
       "ProcessDefinitionKeys": null, // İşlem tanımlama anahtarlarına göre görevleri filtreleyin. (Key = BpmnProcessId) - orn: MUTA. Json List
-      "ProcessVariables": { "rasim": 1 }, // İşlem örneği değişken değerlerine dayalı olarak görevleri filtrelemek için kullanılan bir JSON nesnesi. Nesnenin özellik adı, bir işlem değişkeni adını temsil ederken, özellik değeri, görevleri filtrelemek için işlem değişkeni değerini temsil eder.
+      //"ProcessVariables": { "rasim": 1 }, // İşlem örneği değişken değerlerine dayalı olarak görevleri filtrelemek için kullanılan bir JSON nesnesi. Nesnenin özellik adı, bir işlem değişkeni adını temsil ederken, özellik değeri, görevleri filtrelemek için işlem değişkeni değerini temsil eder.
       "TenantIds": null, // Görevleri kiracı kimliklerine göre filtreleyin.
       "BusinessKey": null, // İşlem örneği iş anahtarına dayalı olarak görevlerin filtrelenmesini sağlayan bir Dize değeri.
       "ProcessDefinitionId": null, // İşlem tanımı kimliğine göre görevleri filtreleyin
       "ProcessDefinitionKey": null, // 	Filter tasks based on process definition key.
       //"ProcessDefinitionVersionTag": null, // İşlem tanımı sürüm etiketine göre görevleri filtreleyin. --- o0o --- bu projede tanimli degil, gerekli ise eklenebilir.
       "WithoutTenantId": false // İşlem tanımı sürüm etiketine göre görevleri filtreleyin.
-    },
-    "SayHelloHandler": {
-      "LockDuration": 13000,
-      "LocalVariables": false,
-      "DeserializeValues": true,
-      "IncludeExtensionProperties": false,
-      "Variables": [ "halk", "bank" ]
-      //"ProcessVariables": { "rasim": 18 }
-    },
-    "SayHelloGuestHandler": {
-      "LockDuration": 12000,
-      "LocalVariables": false,
-      "DeserializeValues": true,
-      "IncludeExtensionProperties": false,
-      "Variables": [ "halk", "bank" ]
-      //"ProcessVariables": { "rasim": 18 }
     }
-  },
-  "bpmnError": "globalError"
+  ]
 }

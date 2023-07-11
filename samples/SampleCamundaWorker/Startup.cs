@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Camunda.Worker;
 using Camunda.Worker.Client;
 using Microsoft.AspNetCore.Builder;
@@ -27,12 +28,11 @@ public class Startup
         {
             client.BaseAddress = new Uri("http://localhost:8080/engine-rest");
         });
-
         
         services.AddCamundaWorker("sampleWorker")
             .AddHandler<SayHelloHandler>()
             .AddHandler<SayHelloGuestHandler>()
-            .AddFetchAndLockRequestProvider((a,b) => new CustomFetchAndLockProvider(Configuration))
+            .AddFetchAndLockRequestProvider((a,b) => new CustomFetchAndLockProvider("HalkHandler",Configuration))
             .ConfigurePipeline(pipeline =>
             {
                 pipeline.Use(next => async context =>
