@@ -6,11 +6,12 @@ using Camunda.Worker.Variables;
 
 namespace SampleCamundaWorker.Handlers;
 
-[HandlerTopics("sayHelloGuest")]
+[HandlerTopics("HalkHandler")]
 public class SayHelloGuestHandler : IExternalTaskHandler
 {
     public Task<IExecutionResult> HandleAsync(ExternalTask externalTask, CancellationToken cancellationToken)
     {
+        var a = "";
         return Task.FromResult<IExecutionResult>(new CompleteResult
         {
             Variables = new Dictionary<string, VariableBase>

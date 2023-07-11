@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SampleCamundaWorker.Handlers;
+using SampleCamundaWorker.Providers;
 
 namespace SampleCamundaWorker;
 
@@ -27,6 +28,24 @@ public class Startup
             client.BaseAddress = new Uri("http://localhost:8080/engine-rest");
         });
 
+        
+        services.AddCamundaWorker("sampleWorker")
+            .AddHandler<SayHelloHandler>()
+            .AddHandler<SayHelloGuestHandler>()
+            .AddFetchAndLockRequestProvider((a,b) => new CustomFetchAndLockProvider(Configuration))
+            .ConfigurePipeline(pipeline =>
+            {
+                pipeline.Use(next => async context =>
+                {
+                    var logger = context.ServiceProvider.GetRequiredService<ILogger<Startup>>();
+                    logger.LogInformation("Started processing of task {Id}", context.Task.Id);
+                    await next(context);
+                    logger.LogInformation("Finished processing of task {Id}", context.Task.Id);
+                });
+            });
+
+
+        /*
         services.AddCamundaWorker("sampleWorker")
             .AddHandler<SayHelloHandler>()
             .AddHandler<SayHelloGuestHandler>()
@@ -41,7 +60,9 @@ public class Startup
                 });
             });
 
+        */
         services.AddHealthChecks();
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
