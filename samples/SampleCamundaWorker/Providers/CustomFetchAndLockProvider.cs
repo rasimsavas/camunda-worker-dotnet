@@ -20,7 +20,7 @@ namespace SampleCamundaWorker.Providers
         public CustomFetchAndLockProvider(IConfiguration configuration)
         {
             _configuration = configuration;
-            _const = _configuration.GetSection("Config").Get<Constants>() ?? new Constants();
+            _const = _configuration.GetSection("Config").Get<Constants>();
             _topics = _configuration.GetSection("Topics").Get<List<Topic>>();
         }
         public FetchAndLockRequest GetRequest()

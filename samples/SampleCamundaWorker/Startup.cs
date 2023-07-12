@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SampleCamundaWorker.Handlers;
 using SampleCamundaWorker.Providers;
 using System;
 
@@ -25,11 +24,26 @@ public class Startup
     {
         services.AddExternalTaskClient(client =>
         {
-            client.BaseAddress = new Uri(Configuration.GetSection("Config").GetSection("ClientBaseAdress").Value);
+            client.BaseAddress = new Uri(Configuration.GetConnectionString("rest"));
         });
-        
+
+
+        ICamundaWorkerBuilder builder = ConfigureHandler.Configure(services, Configuration);
+
+        builder.ConfigurePipeline(pipeline =>
+        {
+            pipeline.Use(next => async context =>
+            {
+                var logger = context.ServiceProvider.GetRequiredService<ILogger<Startup>>();
+                logger.LogInformation("Started processing of task {Id}", context.Task.Id);
+                await next(context);
+                logger.LogInformation("Finished processing of task {Id}", context.Task.Id);
+            });
+        });
+
+        /*
         services.AddCamundaWorker("sampleWorker")
-            .AddHandler<SayHelloHandler>()
+            //.AddHandler<SayHelloHandler>()
             //.AddHandler<SayHelloGuestHandler>()
             .AddFetchAndLockRequestProvider((a,b) => new CustomFetchAndLockProvider(Configuration))
             .ConfigurePipeline(pipeline =>
