@@ -7,5 +7,6 @@ namespace SampleCamundaWorker.Providers
         public int MaxTasks { get; set; }
         public bool UsePriority { get; set; }
         public string WorkerId { get; set; }
+        public string GlobalBpmnError { get; set; }
     }
 }

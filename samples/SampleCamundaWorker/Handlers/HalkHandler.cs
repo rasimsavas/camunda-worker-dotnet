@@ -2,6 +2,7 @@ using Camunda.Worker;
 using Camunda.Worker.Client;
 using Camunda.Worker.Variables;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SampleCamundaWorker.Providers;
 using System;
@@ -18,25 +19,21 @@ namespace SampleCamundaWorker.Handlers
     /// Custom handler class (for instance) <see cref="IExternalTaskHandler"/see> interface.
     /// </summary>
     [TopicName("HalkHandler")]
-    public class HalkHandler : IExternalTaskHandler
+    public class HalkHandler //: IExternalTaskHandler
     {
-        private IConfiguration _config { get; set; }
         private readonly IExternalTaskClient _client;
-        private string _globalBpmnError = "BPMN_ERROR";
-        private string _workerId = "GlobalOptions:WorkerId";
+        private readonly GlobalOptions _globalOptions;
         /// <summary>
         /// itializes a new instance of the <see cref="HalkHandler"/> class.
         /// </summary>
         /// <param name="config">The configuration object.</param>
         /// <param name="client">The external task client.</param>
         public HalkHandler(
-            IConfiguration config,
-            IExternalTaskClient client
-        )
+            IExternalTaskClient client,
+            IOptionsMonitor<GlobalOptions> globalOptions)
         {
-            _config = config;
             _client = client;
-            SetFileds();
+            _globalOptions = globalOptions.CurrentValue;
         }
 
         /// <summary>
@@ -59,14 +56,14 @@ namespace SampleCamundaWorker.Handlers
                 }
                 else if (!response.Response.IsSuccessStatusCode)
                 {
-                    return new BpmnErrorResult(_globalBpmnError, response.Response.ReasonPhrase, new Dictionary<string, VariableBase>
+                    return new BpmnErrorResult(_globalOptions.GlobalBpmnError, response.Response.ReasonPhrase, new Dictionary<string, VariableBase>
                     {
                         ["response.field"] = new StringVariable("Error Variable")
                     });
                 }
                 else
                 {
-                    await _client.ExtendLockAsync(externalTask.Id, new ExtendLockRequest(_workerId, 3000));
+                    await _client.ExtendLockAsync(externalTask.Id, new ExtendLockRequest(_globalOptions.WorkerId, 3000));
                     return new NoneResult();
                 }
             }
@@ -104,19 +101,13 @@ namespace SampleCamundaWorker.Handlers
 
         }
 
-        private Dictionary<string, VariableBase> CreateProcessVariables(ApiResponse response)
+        private static Dictionary<string, VariableBase> CreateProcessVariables(ApiResponse response)
         {
             var processVariables = new Dictionary<string, VariableBase>();
             // Yanıttan gelen verilere göre işlem değişkenlerini oluşturma işlemi.
             processVariables.Add("user", new StringVariable(JsonConvert.SerializeObject(response)));
 
             return processVariables;
-        }
-
-        private void SetFileds()
-        {
-            _globalBpmnError = _config.GetSection(_globalBpmnError).Value;  /// 'application.json'.
-            _workerId = _config.GetSection(_workerId).Value;    /// etc
         }
 
         private static void LogException(Exception e)

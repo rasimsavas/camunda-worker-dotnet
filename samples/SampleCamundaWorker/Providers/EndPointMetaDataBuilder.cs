@@ -26,7 +26,7 @@ public class EndpointMetadataBuilder
     private string _processDefinitionId;
     private string _processDefinitionKey;
     //private string _processDefinitionVersionTag;
-    private bool _withoutTenantId;
+    private bool? _withoutTenantId;
     private readonly string _topics = "AllTopics";
 
     /// <summary>
@@ -42,27 +42,22 @@ public class EndpointMetadataBuilder
 
     private void Initialize(string topicName)
     {
-
         var topic = _config.GetSection(_topics).Get<FetchAndLockRequest.Topic[]>().Where(topic => topic.TopicName == topicName).First();
 
         _topicNames.Add(topicName);
-
-
-
-        _lockDuration = topic.LockDuration; //_config.GetSection($"{_topics}:{topicName}:LockDuration").Get<int>();
-        _localVariables = topic.LocalVariables; //_config.GetSection($"{_topics}:{topicName}:LocalVariables").Get<bool>();
-        _deserializeValues = topic.DeserializeValues; //_config.GetSection($"{_topics}:{topicName}:DeserializeValues").Get<bool>();
-        _includeExtensionProperties = topic.IncludeExtensionProperties; //_config.GetSection($"{_topics}:{topicName}:IncludeExtensionProperties").Get<bool>();
-        _variables = topic.Variables; //_config.GetSection($"{_topics}:{topicName}:Variables").Get<List<string>>();
-        _processDefinitionKeys = topic.ProcessDefinitionKeyIn; //_config.GetSection($"{_topics}:{topicName}:ProcessDefinitionKeys").Get<List<string>>();
-        _processDefinitionIds = topic.ProcessDefinitionIdIn; // _config.GetSection($"{_topics}:{topicName}:ProcessDefinitionIds").Get<List<string>>();
-        _processVariables = topic.ProcessVariables; // _config.GetSection($"{_topics}:{topicName}:ProcessVariables").Get<Dictionary<string, string>>();
-        _tenantIds = topic.TenantIdIn; // _config.GetSection($"{_topics}:{topicName}:TenantIds").Get<List<string>>();
-        _businessKey = topic.BusinessKey; // _config.GetSection($"{_topics}:{topicName}:BusinessKey").Get<string>();
-        _processDefinitionId = topic.ProcessDefinitionId; // _config.GetSection($"{_topics}:{topicName}:ProcessDefinitionId").Get<string>();
-        _processDefinitionKey = topic.ProcessDefinitionKey; // _config.GetSection($"{_topics}:{topicName}:ProcessDefinitionKey").Get<string>();
-        //_processDefinitionVersionTag = _config.GetSection($"{_topics}:{topicName}:ProcessDefinitionVersionTag").Get<string>();
-        _withoutTenantId = (bool)topic.WithoutTenantId; // _config.GetSection($"{_topics}:{topicName}:WithoutTenantId").Get<bool>();
+        _lockDuration = topic.LockDuration;
+        _localVariables = topic.LocalVariables;
+        _deserializeValues = topic.DeserializeValues;
+        _includeExtensionProperties = topic.IncludeExtensionProperties;
+        _variables = topic.Variables;
+        _processDefinitionKeys = topic.ProcessDefinitionKeyIn;
+        _processDefinitionIds = topic.ProcessDefinitionIdIn;
+        _processVariables = topic.ProcessVariables;
+        _tenantIds = topic.TenantIdIn;
+        _businessKey = topic.BusinessKey;
+        _processDefinitionId = topic.ProcessDefinitionId; 
+        _processDefinitionKey = topic.ProcessDefinitionKey;
+        _withoutTenantId = topic.WithoutTenantId;
     }
 
     /// <summary>

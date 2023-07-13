@@ -25,7 +25,7 @@ namespace SampleCamundaWorker.Providers
 
         public FetchAndLockRequest GetRequest()
         {
-            var topics1 = _config.GetSection("AllTopics").Get<FetchAndLockRequest.Topic[]>(); //.Get<List<FetchAndLockRequest.Topic[]>>().First();
+            var topics1 = _config.GetSection("AllTopics").Get<FetchAndLockRequest.Topic[]>();
 
             var fetchAndLockRequest = new FetchAndLockRequest(_options.WorkerId, _options.MaxTasks)
             {

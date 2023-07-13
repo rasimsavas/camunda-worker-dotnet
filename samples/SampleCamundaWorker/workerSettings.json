@@ -4,7 +4,8 @@
     "MaxTasks": 11,
     "UsePriority": true,
     "AsyncResponseTimeout": 10001,
-    "WorkerId": "halkbankWorker"
+    "WorkerId": "halkbankWorker",
+    "BPMN_ERROR": "globalError"
   },
   "AllTopics": [
     {
