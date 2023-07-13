@@ -1,13 +1,18 @@
 using Camunda.Worker;
 using Camunda.Worker.Client;
+using Camunda.Worker.Endpoints;
+using Camunda.Worker.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SampleCamundaWorker.Handlers;
 using SampleCamundaWorker.Providers;
 using System;
+using System.Collections.Generic;
 
 namespace SampleCamundaWorker;
 
@@ -22,6 +27,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.Configure<GlobalOptions>(Configuration.GetSection("GlobalOptions"));
         services.AddExternalTaskClient(client =>
         {
             client.BaseAddress = new Uri(Configuration.GetConnectionString("rest"));
@@ -30,6 +36,11 @@ public class Startup
 
         ICamundaWorkerBuilder builder = ConfigureHandler.Configure(services, Configuration);
 
+        builder.AddFetchAndLockRequestProvider((workerId, provider) => new CustomFetchAndLockProvider(
+            provider.GetRequiredService<IConfiguration>(),
+            provider.GetRequiredService<IOptionsMonitor<GlobalOptions>>()
+            )
+        );
         builder.ConfigurePipeline(pipeline =>
         {
             pipeline.Use(next => async context =>

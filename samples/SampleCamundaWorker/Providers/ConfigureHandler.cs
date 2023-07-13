@@ -33,7 +33,7 @@ namespace SampleCamundaWorker.Providers
                                 m.GetParameters()[1].ParameterType == endpointMetadataType)
                     .Single();
 
-                var camundaWorkerBuilder = services.AddCamundaWorker(config.GetSection("workerId").Value, 1);
+                var camundaWorkerBuilder = services.AddCamundaWorker(config.GetSection("GlobalOptions:ClientBaseAdress").Value, Int32.Parse(config.GetSection("GlobalOptions:MaxTasks").Value));
 
                 foreach (var type in assembly.GetExportedTypes())
                 {

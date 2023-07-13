@@ -1,12 +1,12 @@
 {
-  "Config": {
+  "GlobalOptions": {
     "ClientBaseAdress": "http://localhost:8080/engine-rest",
     "MaxTasks": 11,
     "UsePriority": true,
     "AsyncResponseTimeout": 10001,
     "WorkerId": "halkbankWorker"
   },
-  "Topics": [
+  "AllTopics": [
     {
       "TopicName": "HalkHandler",
       "LockDuration": 12345, // Zorunlu. Harici görevleri milisaniye cinsinden kilitleme süresi.
@@ -16,7 +16,7 @@
       "Variables": [ "halk", "bank", "localVar" ], // Değişken adlarını temsil eden bir JSON Dize değerleri dizisi. Bu konuya ait her bir sonuç görevi için, verilen değişkenler, harici görevin yürütülmesinden erişilebilirlerse de döndürülür. Sağlanmazsa - tüm değişkenler alınır.
       "ProcessDefinitionIds": null, // İşlem tanımı kimliklerine göre görevleri filtreleyin. Json List
       "ProcessDefinitionKeys": null, // İşlem tanımlama anahtarlarına göre görevleri filtreleyin. (Key = BpmnProcessId) - orn: MUTA. Json List
-      //"ProcessVariables": { "rasim": 1 }, // İşlem örneği değişken değerlerine dayalı olarak görevleri filtrelemek için kullanılan bir JSON nesnesi. Nesnenin özellik adı, bir işlem değişkeni adını temsil ederken, özellik değeri, görevleri filtrelemek için işlem değişkeni değerini temsil eder.
+      "ProcessVariables": null, // İşlem örneği değişken değerlerine dayalı olarak görevleri filtrelemek için kullanılan bir JSON nesnesi. Nesnenin özellik adı, bir işlem değişkeni adını temsil ederken, özellik değeri, görevleri filtrelemek için işlem değişkeni değerini temsil eder.
       "TenantIds": null, // Görevleri kiracı kimliklerine göre filtreleyin.
       "BusinessKey": null, // İşlem örneği iş anahtarına dayalı olarak görevlerin filtrelenmesini sağlayan bir Dize değeri.
       "ProcessDefinitionId": null, // İşlem tanımı kimliğine göre görevleri filtreleyin
@@ -24,7 +24,8 @@
       //"ProcessDefinitionVersionTag": null, // İşlem tanımı sürüm etiketine göre görevleri filtreleyin. --- o0o --- bu projede tanimli degil, gerekli ise eklenebilir.
       "WithoutTenantId": false // İşlem tanımı sürüm etiketine göre görevleri filtreleyin.
     },
-    { "TopicName" :  "BankHandler",
+    {
+      "TopicName": "BankHandler",
       "LockDuration": 13000,
       "LocalVariables": false,
       "DeserializeValues": true,
@@ -32,5 +33,6 @@
       "Variables": [ "halk", "bank" ]
       //"ProcessVariables": { "rasim": 18 }
     }
-  ]
+  ],
+  "BPMN_ERROR": "globalError"
 }

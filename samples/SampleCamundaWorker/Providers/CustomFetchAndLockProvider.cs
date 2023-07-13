@@ -1,72 +1,67 @@
+using Camunda.Worker;
 using Camunda.Worker.Client;
+using Camunda.Worker.Endpoints;
 using Camunda.Worker.Execution;
-using Camunda.Worker.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using static Camunda.Worker.Client.FetchAndLockRequest;
-
 namespace SampleCamundaWorker.Providers
 {
-    public class CustomFetchAndLockProvider : IFetchAndLockRequestProvider
+    public sealed class CustomFetchAndLockProvider : IFetchAndLockRequestProvider
     {
-        private IConfiguration _configuration;
-        private Constants _const;
-        private List<Topic> _topics;
+        private readonly GlobalOptions _options;
+        private readonly IConfiguration _config;
 
-        public CustomFetchAndLockProvider(IConfiguration configuration)
+        public CustomFetchAndLockProvider(
+            IConfiguration config,
+            IOptionsMonitor<GlobalOptions> gOptions
+            )
         {
-            _configuration = configuration;
-            _const = _configuration.GetSection("Config").Get<Constants>();
-            _topics = _configuration.GetSection("Topics").Get<List<Topic>>();
+            _config = config;
+            _options = gOptions.CurrentValue;
         }
+
         public FetchAndLockRequest GetRequest()
         {
-            
-            var request = new FetchAndLockRequest(_const.WorkerId , _const.MaxTasks);
+            var topics1 = _config.GetSection("AllTopics").Get<FetchAndLockRequest.Topic[]>(); //.Get<List<FetchAndLockRequest.Topic[]>>().First();
 
-            var checkEmpty = _topics.Where(topic => topic.ProcessDefinitionId == "" || topic.ProcessDefinitionKey == "" || topic.BusinessKey == "").ToList();
-            if(checkEmpty.Any())
+            var fetchAndLockRequest = new FetchAndLockRequest(_options.WorkerId, _options.MaxTasks)
             {
-                foreach (var t in checkEmpty)
+                UsePriority = _options.UsePriority,
+                AsyncResponseTimeout = _options.AsyncResponseTimeout,
+                Topics = GetTopics(topics1)
+            };
+
+            return fetchAndLockRequest;
+        }
+
+        private static FetchAndLockRequest.Topic[] GetTopics(FetchAndLockRequest.Topic[] topics)
+        {
+            try
+            {
+                var result = topics.Where(x => x.ProcessDefinitionKey == "" || x.ProcessDefinitionId == "" || x.BusinessKey == "").ToArray();
+                if (!result.Any())
+                    return topics;
+
+                else
                 {
-                    t.ProcessDefinitionId = null;
-                    t.ProcessDefinitionKey = null;
-                    t.BusinessKey = null;
+                    foreach (var topic in topics)
+                    {
+                        topic.ProcessDefinitionId = null;
+                        topic.BusinessKey = null;
+                        topic.ProcessDefinitionKey = null;
+                    }
                 }
+
+                return topics;
+            }
+            catch(Exception e)
+            {
+                throw;
             }
 
-            request.Topics = _topics;
-            request.AsyncResponseTimeout = _const.AsyncResponseTimeout;
-            request.UsePriority = _const.UsePriority;
-            return request;
         }
-        private class Constants
-        {
-            public int MaxTasks { get; set; }
-            public bool UsePriority { get; set; }
-            public int AsyncResponseTimeout { get; set; }
-            public string WorkerId { get; set; }
-        }
-        public class ClientOptions
-        {
-            public int LockDuration { get; set; }
-            public bool LocalVariables { get; set; }
-            public bool DeserializeValues { get; set; }
-            public bool IncludeExtensionProperties { get; set; }
-            public List<string> Variables { get; set; }
-            public List<string> ProcessDefinitionIds { get; set; }
-            public List<string> ProcessDefinitionKeys { get; set; }
-            public Dictionary<string, string> ProcessVariables { get; set; }
-            public List<string> TenantIds { get; set; }
-            public string BusinessKey { get; set; }
-            public string ProcessDefinitionId { get; set; }
-            public string ProcessDefinitionKey { get; set; }
-            public bool WithoutTenantId { get; set; }
-        }
-
     }
 }

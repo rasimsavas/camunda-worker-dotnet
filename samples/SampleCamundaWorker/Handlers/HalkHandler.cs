@@ -23,7 +23,7 @@ namespace SampleCamundaWorker.Handlers
         private IConfiguration _config { get; set; }
         private readonly IExternalTaskClient _client;
         private string _globalBpmnError = "BPMN_ERROR";
-        private string _workerId = "workerId";
+        private string _workerId = "GlobalOptions:WorkerId";
         /// <summary>
         /// itializes a new instance of the <see cref="HalkHandler"/> class.
         /// </summary>
