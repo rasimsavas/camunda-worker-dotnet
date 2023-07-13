@@ -2,6 +2,7 @@ using Camunda.Worker;
 using Camunda.Worker.Endpoints;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +15,7 @@ namespace SampleCamundaWorker.Providers
     /// </summary>
     public static class ConfigureHandler
     {
+        private static GlobalOptions _options;
         /// <summary>
         /// Configures external task handlers based on the exported types in the assembly.
         /// </summary>
@@ -32,8 +34,8 @@ namespace SampleCamundaWorker.Providers
                     .Where(m => m.Name == "AddHandler" && m.GetParameters().Length == 2 &&
                                 m.GetParameters()[1].ParameterType == endpointMetadataType)
                     .Single();
-
-                var camundaWorkerBuilder = services.AddCamundaWorker(config.GetSection("GlobalOptions:ClientBaseAdress").Value, Int32.Parse(config.GetSection("GlobalOptions:MaxTasks").Value));
+                _options = services.BuildServiceProvider().GetRequiredService<IOptionsMonitor<GlobalOptions>>().CurrentValue;
+                var camundaWorkerBuilder = services.AddCamundaWorker(_options.WorkerId, _options.NumberOfWorker);
 
                 foreach (var type in assembly.GetExportedTypes())
                 {

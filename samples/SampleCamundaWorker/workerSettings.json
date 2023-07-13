@@ -5,7 +5,8 @@
     "UsePriority": true,
     "AsyncResponseTimeout": 10001,
     "WorkerId": "halkbankWorker",
-    "BPMN_ERROR": "globalError"
+    "BPMN_ERROR": "globalError",
+    "NumberOfWorker" : 1
   },
   "AllTopics": [
     {

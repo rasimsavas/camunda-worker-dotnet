@@ -8,5 +8,6 @@ namespace SampleCamundaWorker.Providers
         public bool UsePriority { get; set; }
         public string WorkerId { get; set; }
         public string GlobalBpmnError { get; set; }
+        public int NumberOfWorker { get; set; }
     }
 }
